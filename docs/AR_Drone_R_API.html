@@ -63,34 +63,72 @@ img {
 
 <div id="ar.drone-2.0-r-api" class="section level1">
 <h1>AR.Drone 2.0 R API</h1>
-<p>author: Ido Bar date: 13/12/2015</p>
-</div>
-<div id="at-commands" class="section level1">
-<h1>AT commands</h1>
+<p>Author: Ido Bar<br />Date: 13/12/2015</p>
+<div id="at-commands" class="section level2">
+<h2>AT commands</h2>
 <ul>
-<li>The AR.Drone 2.0 is controlled by low-level AT* commands that are sent as text strings via UDP packets (port=5556. IP=192.168.1.1). Example: <code>AT*CONFIG=1,control:altitude_max,2000\r</code><br />This example sets the maximum altitude to 2m.</li>
-<li>Each command ends with a &lt;LF&gt; character (coded by R with \r).</li>
-<li>Some of the arguments sent to the drone are plain integers, while others are 32bit signed integer representing binary or floats (will be further discussed)</li>
-<li>The drone must recieve a signal from the WiFi connection at least once a second (every 50-100ms recommended), or the connection will drop.</li>
+<li>The AR.Drone 2.0 is controlled by low-level AT* commands that are sent as text strings via UDP packets (port=5556. IP=192.168.1.1). Example: <code>AT*CONFIG=1,control:altitude_max,2000\r</code><br />This example sets the maximum altitude to 2 m.</li>
+<li>Each command ends with a &lt;LF&gt; character (coded by R with <code>\\r</code>).</li>
+<li>Some of the arguments sent to the drone are plain integers, while others are 32bit signed integer representing binary or floats (using float2Int function from <a href="bin/float2int_improved.R" class="uri">bin/float2int_improved.R</a>)</li>
+<li>The drone must recieve a signal from the WiFi connection at least once a second (every 50-100 ms recommended), or the connection will drop.</li>
+<li>The API will take care of translating the user commands to low-level AT commands and setup a continuous signal transmission.</li>
 </ul>
 </div>
-<div id="additional-reading-materials" class="section level1">
-<h1>Additional reading materials</h1>
-<p>Drone commands: - <a href="http://www.robotappstore.com/Knowledge-Base/Programming-ARDrone/101.html">Programming ARDrone</a> - <a href="https://abstract.cs.washington.edu/~shwetak/classes/ee472/assignments/lab4/drone_api.pdf">AT commands for AR.Drone</a></p>
-<p>Float to 32bit signed integer word conversion example:</p>
-<p>(float)0.05=(int)1028443341<br />(float)-0.05=(int)-1119040307</p>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<ul>
+<li>Create a sequence of commands for the flight sequence (<code>drone.take_off()</code> must come first and <code>drone.land()</code> last of course).</li>
+<li><code>take_off()</code> argument is the duration of the action, until further command is given.</li>
+<li>Drone movements are called by function <code>drone.do(&quot;direction/action&quot;, duration_in_seconds, speed)</code>.</li>
+<li>Drone speed is an optional argument representing a fraction of the maximum speed on a scale of 0-1. (if not used, a default of 0.5 is used).</li>
+<li>Drone movement options: hover, up, down, move_right, move_left, move_forward, move_back, rotate_right, rotate_left.</li>
+<li>Pre-defined flight sequences (coded in the drone firmware) are available with the <code>drone.anim(&quot;animation&quot;, duration)</code> function:</li>
+</ul>
+<p>‘phiM30Deg’, ‘phi30Deg’, ‘thetaM30Deg’, ‘theta30Deg’, ‘theta20degYaw200deg’, ‘theta20degYawM200deg’, ‘turnaround’, ‘turnaroundGodown’, ‘yawShake’, ‘yawDance’, ‘phiDance’, ‘thetaDance’, ‘vzDance’, ‘wave’, ‘phiThetaMixed’, ‘doublePhiThetaMixed’, ‘flipAhead’, ‘flipBehind’, ‘flipLeft’, ‘flipRight’</p>
+<p><strong>!!! Use with enough air space and height to allow the drone to perform the animation !!!</strong></p>
+<div id="flight-sequence-example" class="section level3">
+<h3>Flight sequence example</h3>
+<pre><code>flight sequence:
+drone.take_off(1)  
+drone.do(&quot;hover&quot;,2)  
+drone.do(&quot;move_forward&quot;, 5, 0.64)  
+drone.do(&quot;hover&quot;,3)  
+drone.do(&quot;move_right&quot;, 3)  
+drone.do(&quot;hover&quot;,3)  
+drone.do(&quot;rotate_right&quot;, 5)  
+drone.do(&quot;up&quot;,2)  
+drone.do(&quot;down&quot;,1)  
+drone.anim(&quot;turnaround&quot;, 3)  
+drone.land()  </code></pre>
+</div>
+</div>
+<div id="additional-reading-material" class="section level2">
+<h2>Additional reading material</h2>
+<div id="drone-commands" class="section level3">
+<h3>Drone commands:</h3>
+<ul>
+<li><a href="http://www.robotappstore.com/Knowledge-Base/Programming-ARDrone/101.html">Programming AR.Drone</a></li>
+<li><a href="https://abstract.cs.washington.edu/~shwetak/classes/ee472/assignments/lab4/drone_api.pdf">AT commands for AR.Drone</a></li>
+</ul>
+</div>
+<div id="float-to-32bit-signed-integer-word-conversion-example" class="section level3">
+<h3>Float to 32bit signed integer word conversion example:</h3>
+<pre><code>(float)0.05=(int)1028443341  
+(float)-0.05=(int)-1119040307</code></pre>
 <ul>
 <li><a href="http://www.h-schmidt.net/FloatConverter/IEEE754.html">Decimal to Hex coversion</a></li>
 <li><a href="http://www.binaryconvert.com/convert_signed_int.html">Hex to signed integer conversion</a></li>
 </ul>
 </div>
-<div id="prerequisite" class="section level1">
-<h1>Prerequisite</h1>
-<p>In order to run the script, you’d need the following:</p>
+</div>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>In order to run the script, you’d need the following (on a windows machine):</p>
 <ul>
 <li>Install <a href="https://nmap.org/download.html">Nmap</a>, make sure you allow it to include the installation directory in your system path.</li>
 <li>If working in windows, you can simply download the <a href="http://nmap.org/dist/ncat-portable-5.59BETA1.zip">Ncat</a> zip file and extract ncat.exe to a folder in your path or to your working directory.</li>
 </ul>
+</div>
 </div>
 
 

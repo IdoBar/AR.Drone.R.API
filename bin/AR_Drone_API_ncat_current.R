@@ -181,19 +181,19 @@ drone.do <- function(action, duration, speed){
 # start flight sequence
 drone_flight_plan <- function(){
   #########################################################################################################
-  # enter here all the commands for the flight sequence (take_off must come first and land last of course)
-  # take_off argument is the duration of the action, until further command is given
-  # drone movements are called by function drone.do("direction/action", duration_in_seconds, speed)
-  # drone speed, is an optional argument representing a fraction of the maximum speed on a scale of 0-1.
-  # (if not used, a default of 0.5 is used). drone movement options: 
-  # hover, up, down, move_right, move_left, move_forward, move_back, rotate_right, rotate_left.
-  # pre-defined flight sequences (coded in the drone firmware) are available (with duration in seconds):
-  
-  # 'phiM30Deg', 'phi30Deg', 'thetaM30Deg', 'theta30Deg', 'theta20degYaw200deg',
-  #   'theta20degYawM200deg', 'turnaround', 'turnaroundGodown', 'yawShake',
-  #   'yawDance', 'phiDance', 'thetaDance', 'vzDance', 'wave', 'phiThetaMixed',
-  #   'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
-  # !!! Use with enought air space and height to allow the drone to perform the animation  !!!!
+#   enter here all the commands for the flight sequence (take_off must come first and land last of course)
+#   take_off argument is the duration of the action, until further command is given
+#   drone movements are called by function drone.do("direction/action", duration_in_seconds, speed)
+#   drone speed, is an optional argument representing a fraction of the maximum speed on a scale of 0-1.
+#   (if not used, a default of 0.5 is used). drone movement options: 
+#   hover, up, down, move_right, move_left, move_forward, move_back, rotate_right, rotate_left.
+#   pre-defined flight sequences (coded in the drone firmware) are available (with duration in seconds):
+#   
+#   'phiM30Deg', 'phi30Deg', 'thetaM30Deg', 'theta30Deg', 'theta20degYaw200deg',
+#     'theta20degYawM200deg', 'turnaround', 'turnaroundGodown', 'yawShake',
+#     'yawDance', 'phiDance', 'thetaDance', 'vzDance', 'wave', 'phiThetaMixed',
+#     'doublePhiThetaMixed', 'flipAhead', 'flipBehind', 'flipLeft', 'flipRight'
+#   !!! Use with enought air space and height to allow the drone to perform the animation  !!!!
   #
   # Todo: 
   # 1. Change the function to take a line from a data frame with action, and arguments (speed, duration)
@@ -207,13 +207,13 @@ drone_flight_plan <- function(){
   drone.take_off(1)
   drone.do("hover",2)
   drone.do("move_forward", 5, 0.64)
-#   drone.do("hover",3)
-#   drone.do("move_right", 3)
-#   drone.do("hover",3)
-#   drone.do("rotate_right", 5)
-#   drone.do("up",2)
-#   drone.do("down",1)
-   drone.anim("turnaround", 3)
+  drone.do("hover",3)
+  drone.do("move_right", 3)
+  drone.do("hover",3)
+  drone.do("rotate_right", 5)
+  drone.do("up",2)
+  drone.do("down",1)
+  drone.anim("turnaround", 3)
   drone.land()  
 }
 
